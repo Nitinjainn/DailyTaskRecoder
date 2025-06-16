@@ -24,9 +24,9 @@ export default function LogViewer() {
         setLoading(true);
         let res;
         if (viewMode === 'user') {
-          res = await axios.get(`http://localhost:5000/api/logs/${selectedUser}`);
+          res = await axios.get(`https://dailytaskrecoder.onrender.com/api/logs/${selectedUser}`);
         } else {
-          res = await axios.get(`http://localhost:5000/api/logs`);
+          res = await axios.get(`https://dailytaskrecoder.onrender.com/api/logs`);
         }
         setLogs(res.data);
       } catch (err) {

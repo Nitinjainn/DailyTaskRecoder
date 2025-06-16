@@ -34,7 +34,7 @@ export default function Home() {
     };
 
     try {
-      await axios.post('http://localhost:5000/api/logs/add', log); // Change this URL if deployed
+      await axios.post('https://dailytaskrecoder.onrender.com/api/logs/add', log); // Change this URL if deployed
       setTitle('');
       setTodayWork('');
       setTechnicalDetails('');
