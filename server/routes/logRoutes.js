@@ -1,26 +1,59 @@
 const express = require('express');
 const router = express.Router();
-const WorkLog = require('../models/WorkLog');
+const Worklog = require('../models/WorkLog');
 
-router.post('/', async (req, res) => {
-  const newLog = new WorkLog(req.body);
-  const saved = await newLog.save();
-  res.json(saved);
+// Add new task log
+router.post('/add', async (req, res) => {
+  try {
+    const {
+      userId,
+      date,
+      title,
+      todayWork,
+      technicalDetails,
+      problemsFaced,
+      solutions,
+      nextPlan,
+      tags
+    } = req.body;
+
+    const log = new Worklog({
+      userId,
+      date,
+      title,
+      todayWork,
+      technicalDetails,
+      problemsFaced,
+      solutions,
+      nextPlan,
+      tags
+    });
+
+    await log.save();
+    res.status(201).json({ message: 'Task submitted successfully' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
+// Get all logs (used in 'week' mode)
+router.get('/', async (req, res) => {
+  try {
+    const logs = await Worklog.find().sort({ date: -1 });
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Existing route: Get logs by user ID
 router.get('/:userId', async (req, res) => {
-  const logs = await WorkLog.find({ userId: req.params.userId });
-  res.json(logs);
-});
-
-router.put('/:id', async (req, res) => {
-  const updated = await WorkLog.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(updated);
-});
-
-router.delete('/:id', async (req, res) => {
-  await WorkLog.findByIdAndDelete(req.params.id);
-  res.json({ message: 'Deleted' });
+  try {
+    const logs = await Worklog.find({ userId: req.params.userId }).sort({ date: -1 });
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
