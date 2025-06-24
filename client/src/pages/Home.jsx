@@ -10,6 +10,7 @@ const teamMembers = [
 
 export default function Home() {
   const [selectedUser, setSelectedUser] = useState(teamMembers[0].id);
+  const [manualDate, setManualDate] = useState('');
   const [title, setTitle] = useState('');
   const [todayWork, setTodayWork] = useState('');
   const [technicalDetails, setTechnicalDetails] = useState('');
@@ -23,7 +24,7 @@ export default function Home() {
   const handleSubmit = async () => {
     const log = {
       userId: selectedUser,
-      date: new Date(),
+      date: manualDate || new Date(),
       title,
       todayWork,
       technicalDetails,
@@ -34,7 +35,7 @@ export default function Home() {
     };
 
     try {
-      await axios.post('https://dailytaskrecoder.onrender.com/api/logs/add', log); // Change this URL if deployed
+      await axios.post('https://dailytaskrecoder.onrender.com/api/logs/add', log);
       setTitle('');
       setTodayWork('');
       setTechnicalDetails('');
@@ -42,6 +43,7 @@ export default function Home() {
       setSolutions('');
       setNextPlan('');
       setTags('');
+      setManualDate('');
       setError('');
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 3000);
@@ -75,6 +77,14 @@ export default function Home() {
             </select>
           </div>
 
+          <Input
+            label="Log Date"
+            value={manualDate}
+            onChange={setManualDate}
+            placeholder="Select date"
+            type="date"
+          />
+
           <Input label="Title (e.g. 'Connected MongoDB')" value={title} onChange={setTitle} />
           <Textarea label="Today's Work Summary" value={todayWork} onChange={setTodayWork} rows={3} />
           <Textarea label="Technical Details" value={technicalDetails} onChange={setTechnicalDetails} rows={4} />
@@ -103,12 +113,12 @@ export default function Home() {
   );
 }
 
-function Input({ label, value, onChange, placeholder }) {
+function Input({ label, value, onChange, placeholder, type = "text" }) {
   return (
     <div>
       <label className="block mb-1 text-sm font-medium">{label}</label>
       <input
-        type="text"
+        type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
