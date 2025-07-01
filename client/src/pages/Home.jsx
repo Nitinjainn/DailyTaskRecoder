@@ -20,6 +20,7 @@ export default function Home() {
   const [tags, setTags] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
     const log = {
@@ -35,7 +36,9 @@ export default function Home() {
     };
 
     try {
+      setIsSubmitting(true); // Start loading
       await axios.post('https://dailytaskrecoder.onrender.com/api/logs/add', log);
+
       setTitle('');
       setTodayWork('');
       setTechnicalDetails('');
@@ -50,6 +53,8 @@ export default function Home() {
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false); // Done
     }
   };
 
@@ -95,10 +100,10 @@ export default function Home() {
 
           <button
             onClick={handleSubmit}
-            disabled={!title.trim()}
+            disabled={!title.trim() || isSubmitting}
             className="w-full bg-blue-600 hover:bg-blue-700 transition rounded-lg py-2 text-white text-lg font-medium disabled:opacity-50"
           >
-            🚀 Submit Log
+            {isSubmitting ? "⏳ Submitting..." : "🚀 Submit Log"}
           </button>
 
           {submitted && (
