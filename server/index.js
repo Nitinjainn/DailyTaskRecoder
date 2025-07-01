@@ -5,8 +5,16 @@ const cors = require('cors');
 const logRoutes = require('./routes/logRoutes');
 
 const app = express();
-app.use(cors());
+
+// ✅ Configure CORS properly
+app.use(cors({
+  origin: "https://stpitasks.vercel.app", // only allow your frontend
+  credentials: true // set true if you're using cookies or auth
+}));
+
 app.use(express.json());
+
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -14,6 +22,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB connection error:", err));
 
+// ✅ Routes
 app.use('/api/logs', logRoutes);
 
 const PORT = process.env.PORT || 5000;
