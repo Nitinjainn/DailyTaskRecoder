@@ -7,9 +7,20 @@ const logRoutes = require('./routes/logRoutes');
 const app = express();
 
 // ✅ Configure CORS properly
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://stpitasks.vercel.app"
+];
+
 app.use(cors({
-  origin: "https://stpitasks.vercel.app", // only allow your frontend
-  credentials: true // set true if you're using cookies or auth
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
 }));
 
 app.use(express.json());
